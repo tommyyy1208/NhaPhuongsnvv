@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Happy Birthday 🎂</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&family=Pacifico&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="bg"></div>
+    <div class="stars" aria-hidden="true"></div>
+    <canvas id="confetti"></canvas>
+    <div class="balloons" aria-hidden="true" id="balloons"></div>
+
+    <main class="card" role="main" aria-live="polite">
+      <div class="ribbon">🎉 Happy Birthday 🎉</div>
+
+      <h1 class="headline">
+        <span
+          class="typewriter"
+          id="typewriter"
+          data-text="Chúc mừng sinh nhật Nhã Phương!"
+        ></span>
+      </h1>
+
+      <p class="subtitle">Hôm nay là ngày của bạn — cười thật tươi nha! ✨</p>
+
+      <div class="photo-frame">
+        <img
+          src="https://gateaux.tahu.vn/storage/banh-kem-hinh-cuc-cut.jpg"
+          alt="Bánh kem sinh nhật"
+        />
+      </div>
+
+      <p class="message">
+        Chúc bạn tuổi mới thật nhiều sức khỏe, bình an, gặp toàn điều may mắn.
+        Ước gì được nấy, tiền vào như nước, niềm vui phủ ngập từ sáng tới khuya!
+        🥳
+      </p>
+
+      <div class="actions">
+        <button class="btn" id="btn-surprise" aria-label="Bấm để bất ngờ">
+          Bất ngờ nè!
+        </button>
+      </div>
+
+      <footer class="footer">
+        <span>— From Dat Nguyen With Love ❤️ —</span>
+      </footer>
+    </main>
+
+    <script>
+      // Typewriter
+      (function typeWriter() {
+        const el = document.getElementById("typewriter");
+        const text = el.getAttribute("data-text");
+        el.textContent = "";
+        let i = 0;
+        function tick() {
+          if (i <= text.length) {
+            el.textContent = text.slice(0, i);
+            i++;
+            setTimeout(tick, 70);
+          } else {
+            el.classList.add("done");
+          }
+        }
+        tick();
+      })();
+
+      // Balloons
+      (function balloons() {
+        const wrap = document.getElementById("balloons");
+        const colors = [
+          "#FFD166",
+          "#EF476F",
+          "#06D6A0",
+          "#118AB2",
+          "#8338ec",
+          "#ff006e",
+        ];
+        for (let i = 0; i < 12; i++) {
+          const b = document.createElement("div");
+          b.className = "balloon";
+          b.style.setProperty("--delay", (Math.random() * 4).toFixed(2) + "s");
+          b.style.setProperty(
+            "--dur",
+            (8 + Math.random() * 6).toFixed(2) + "s"
+          );
+          b.style.setProperty("--x", (Math.random() * 100).toFixed(2) + "vw");
+          b.style.background = colors[i % colors.length];
+          wrap.appendChild(b);
+        }
+      })();
+
+      // Confetti
+      (function confettiInit() {
+        const canvas = document.getElementById("confetti");
+        const ctx = canvas.getContext("2d");
+        let W, H, pieces;
+        function resize() {
+          W = canvas.width = innerWidth;
+          H = canvas.height = innerHeight;
+        }
+        window.addEventListener("resize", resize);
+        resize();
+        function spawn(n = 180) {
+          pieces = [...Array(n)].map(() => ({
+            x: Math.random() * W,
+            y: -20,
+            r: 4 + Math.random() * 6,
+            a: Math.random() * 2 * Math.PI,
+            s: 1 + Math.random() * 3,
+            w: 0.8 + Math.random() * 1.2,
+            c: `hsl(${Math.floor(Math.random() * 360)},90%,60%)`,
+          }));
+        }
+        function draw() {
+          ctx.clearRect(0, 0, W, H);
+          pieces.forEach((p) => {
+            p.y += p.s;
+            p.x += Math.sin((p.a += 0.04)) * p.w;
+            ctx.fillStyle = p.c;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+            ctx.fill();
+          });
+          pieces = pieces.filter((p) => p.y < H + 20);
+          requestAnimationFrame(draw);
+        }
+        spawn(220);
+        draw();
+        const boom = () => {
+          spawn(260);
+        };
+        document.getElementById("btn-surprise").addEventListener("click", boom);
+      })();
+
+      // Hiện ảnh khi bấm nút
+      (function surpriseFeature() {
+        const btn = document.getElementById("btn-surprise");
+        const img = document.querySelector(".photo-frame img");
+        btn.addEventListener("click", () => {
+          img.classList.add("show");
+        });
+      })();
+    </script>
+  </body>
+</html>
